@@ -469,7 +469,7 @@ service:
   externalTrafficPolicy: Cluster
   ## @param service.annotations Additional custom annotations for Ghost service
   ##
-  annotations: {}
+  annotations: 
     service.beta.kubernetes.io/aws-load-balance-scheme: internet-facing
   ## @param service.extraPorts Extra port to expose on Ghost service
   ##

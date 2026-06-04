@@ -4,40 +4,25 @@ metadata:
   name: deploy
   namespace: argocd
 spec:
-  description: "Ghost Blog project"
+  clusterResourceWhitelist:
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
 
-  sourceRepos:
-    - "*"
+  description: Ghost Blog project
 
   destinations:
-    - name: in-cluster
-      namespace: ghost
+    - name: "*"
+      namespace: "*"
       server: https://kubernetes.default.svc
-    - name: in-cluster
-      namespace: argocd
-      server: https://kubernetes.default.svc
-
-  clusterResourceWhitelist:
-    - group: "rbac.authorization.k8s.io"
-      kind: ClusterRole
-    - group: "rbac.authorization.k8s.io"
-      kind: ClusterRoleBinding
-    - group: "apiextensions.k8s.io"
-      kind: CustomResourceDefinition
-    - group: ""
-      kind: Namespace
-
-  namespaceResourceWhitelist:
-    - group: "*"
-      kind: "*"
 
   roles:
     - name: deploy-app
-      description: "Role for deploying Ghost app"
-      policies:
-        - p, proj:deploy:deploy-app, applications, get, deploy/*, allow
-        - p, proj:deploy:deploy-app, applications, create, deploy/*, allow
-        - p, proj:deploy:deploy-app, applications, update, deploy/*, allow
-        - p, proj:deploy:deploy-app, applications, sync, deploy/*, allow
       groups:
-        - "rbac.authorization.k8s.io"
+        - rbac.authorization.k8s.io
+
+  sourceRepos:
+    - "*"
