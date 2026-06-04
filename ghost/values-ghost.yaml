@@ -1,25 +1,16 @@
-# Ghost Configuration
 ghostUsername: admin
 ghostPassword: Admin@12345
 ghostEmail: admin@example.com
 ghostBlogTitle: "My Ghost Blog"
 ghostHost: ""
 
-# Global StorageClass - fixes mysql PVC issue
-global:
-  defaultStorageClass: "gp2-csi"
-
-# Service
 service:
   type: ClusterIP
 
-# Ingress - ALB
 ingress:
   enabled: true
   ingressClassName: alb
   hostname: "ghost.local"
-  path: "/*"
-  pathType: ImplementationSpecific
   annotations:
     alb.ingress.kubernetes.io/scheme: "internet-facing"
     alb.ingress.kubernetes.io/target-type: "ip"
@@ -29,15 +20,11 @@ ingress:
     alb.ingress.kubernetes.io/subnets: "subnet-0bced9e6f0f5d767a,subnet-0c9b55ffcce908122,subnet-0bbd4057dd2a3fc9a"
   tls: false
 
-# Ghost Persistence - EFS
 persistence:
   enabled: true
   storageClass: "ghost-efs-sc"
-  accessModes:
-    - ReadWriteOnce
   size: 8Gi
 
-# MySQL
 mysql:
   enabled: true
   auth:
@@ -49,7 +36,4 @@ mysql:
     persistence:
       enabled: true
       storageClass: "gp2-csi"
-      accessModes:
-        - ReadWriteOnce
       size: 8Gi
-    resourcesPreset: "small"

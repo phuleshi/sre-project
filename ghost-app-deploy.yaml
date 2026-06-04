@@ -26,3 +26,4 @@ spec:
       selfHeal: true   # Fix resources if manually changed in the cluster
     syncOptions:
       - CreateNamespace=true
+      - Replace=true 
