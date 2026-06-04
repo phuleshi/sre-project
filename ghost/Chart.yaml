@@ -5,5 +5,5 @@ type: application
 version: "0.1.0"
 dependencies:
   - name: ghost
-    version: "*"
-    repository: https://charts.bitnami.com/bitnami
+    version: "25.x.x"
+    repository: oci://registry-1.docker.io/bitnamicharts

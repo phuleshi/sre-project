@@ -4,6 +4,9 @@ ghostEmail: admin@example.com
 ghostBlogTitle: "My Ghost Blog"
 ghostHost: ""
 
+global:
+  defaultStorageClass: "gp2-csi"
+
 service:
   type: ClusterIP
 
@@ -11,6 +14,8 @@ ingress:
   enabled: true
   ingressClassName: alb
   hostname: "ghost.local"
+  path: "/*"
+  pathType: ImplementationSpecific
   annotations:
     alb.ingress.kubernetes.io/scheme: "internet-facing"
     alb.ingress.kubernetes.io/target-type: "ip"
@@ -23,6 +28,8 @@ ingress:
 persistence:
   enabled: true
   storageClass: "ghost-efs-sc"
+  accessModes:
+    - ReadWriteMany
   size: 8Gi
 
 mysql:
@@ -36,4 +43,7 @@ mysql:
     persistence:
       enabled: true
       storageClass: "gp2-csi"
+      accessModes:
+        - ReadWriteOnce
       size: 8Gi
+    resourcesPreset: "small"
