@@ -9,13 +9,6 @@ ghostHost: ""
 global:
   defaultStorageClass: "gp2-csi"
 
-# Use latest available image
-image:
-  registry: docker.io
-  repository: bitnami/ghost
-  tag: ""
-  pullPolicy: IfNotPresent
-
 # Service
 service:
   type: ClusterIP
