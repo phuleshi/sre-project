@@ -17,7 +17,7 @@ global:
   ##   - myRegistryKeySecretName
   ##
   imagePullSecrets: []
-  defaultStorageClass: ""
+  defaultStorageClass: "gp2-csi"
   ## Security parameters
   ##
   security:
@@ -110,11 +110,11 @@ image:
 
 ## @param ghostUsername Ghost user name
 ##
-ghostUsername: user
+ghostUsername: phule
 ## @param ghostPassword Ghost user password
 ## Defaults to a random 10-character alphanumeric string if not set
 ##
-ghostPassword: ""
+ghostPassword: "Phudoicung-2705"
 ## @param existingSecret Name of existing secret containing Ghost credentials
 ## NOTE: Must contain key `ghost-password`
 ## NOTE: When it's set, the `ghostPassword` parameter is ignored
@@ -128,7 +128,7 @@ ghostEmail: user@example.com
 ghostBlogTitle: User's Blog
 ## @param ghostHost Ghost host to create application URLs
 ##
-ghostHost: ""
+ghostHost: "localhost:2368"
 ## @param ghostPath URL sub path where to server the Ghost application
 ##
 ghostPath: /
@@ -470,6 +470,7 @@ service:
   ## @param service.annotations Additional custom annotations for Ghost service
   ##
   annotations: {}
+    service.beta.kubernetes.io/aws-load-balance-scheme: internet-facing
   ## @param service.extraPorts Extra port to expose on Ghost service
   ##
   extraPorts: []
@@ -604,14 +605,14 @@ persistence:
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
   ##
-  storageClass: ""
+  storageClass: "ghost-efs-sc"
   ## @param persistence.annotations Additional custom annotations for the PVC
   ##
   annotations: {}
   ## @param persistence.accessModes [array] Persistent Volume access modes
   ##
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   ## @param persistence.size Persistent Volume size
   ##
   size: 8Gi
@@ -686,6 +687,9 @@ volumePermissions:
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/mysql/values.yaml
 ##
 mysql:
+  ## add enable metric
+  metrics:
+    enabled: true
   ## @param mysql.enabled Deploy a MySQL server to satisfy the applications database requirements
   ## To use an external database set this to false and configure the `externalDatabase.*` parameters
   ##
@@ -703,10 +707,10 @@ mysql:
   ##      https://github.com/bitnami/containers/tree/main/bitnami/mysql/#creating-a-database-on-first-run
   ##      https://github.com/bitnami/containers/tree/main/bitnami/mysql/#creating-a-database-user-on-first-run
   auth:
-    rootPassword: ""
+    rootPassword: "root"
     database: bitnami_ghost
     username: bn_ghost
-    password: ""
+    password: "root"
     existingSecret: ""
   ## MySQL Primary configuration
   ##
