@@ -1,0 +1,20 @@
+global:
+  domain: k8s-argocd-argocdse-2fc475cf38-1540497674.ap-northeast-1.elb.amazonaws.com
+
+configs:
+  params:
+    server.insecure: "true"
+
+server:
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: alb
+    annotations:
+      alb.ingress.kubernetes.io/scheme: "internet-facing"
+      alb.ingress.kubernetes.io/target-type: "ip"
+      alb.ingress.kubernetes.io/backend-protocol: "HTTP"
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+      alb.ingress.kubernetes.io/load-balancer-attributes: "idle_timeout.timeout_seconds=300"
+      alb.ingress.kubernetes.io/subnets: "subnet-0bced9e6f0f5d767a,subnet-0c9b55ffcce908122,subnet-0bbd4057dd2a3fc9a"
