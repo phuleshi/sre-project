@@ -3,7 +3,8 @@ name: ghost
 description: Ghost Blog
 type: application
 version: "0.1.0"
+
 dependencies:
   - name: ghost
-    version: "25.x.x"
+    version: "25.0.4"
     repository: oci://registry-1.docker.io/bitnamicharts
