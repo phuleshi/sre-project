@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ghost                          # This is the app name you'll see in Argo UI
+  namespace: argocd                    # Always in argocd namespace
+  annotations:
+    argocd.argoproj.io/sync-wave: "1" # Higher sync wave
+spec:
+  project: deploy                      # Argo CD project
+
+  source:
+    repoURL: 'https://github.com/phuleshi/sre-project.git'  # Your GitHub repo
+    targetRevision: main                                    # Git branch
+    path: ghost                                                # Path inside the repo to Helm chart
+    helm:
+      valueFiles:
+        - values-ghost.yaml                                    # Custom values file
+
+  destination:
+    server: https://kubernetes.default.svc                    # Your cluster
+    namespace: ghost                                           # Namespace to deploy
+
+  syncPolicy:
+    automated:
+      prune: true      # Remove resources if they are deleted from Git
+      selfHeal: true   # Fix resources if manually changed in the cluster
+    syncOptions:
+      - CreateNamespace=true
