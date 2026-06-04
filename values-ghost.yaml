@@ -1,0 +1,39 @@
+ghostUsername: admin
+ghostPassword: Admin@12345
+ghostEmail: admin@example.com
+ghostBlogTitle: "My Ghost Blog"
+ghostHost: ""
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  ingressClassName: alb
+  hostname: "ghost.local"
+  annotations:
+    alb.ingress.kubernetes.io/scheme: "internet-facing"
+    alb.ingress.kubernetes.io/target-type: "ip"
+    alb.ingress.kubernetes.io/backend-protocol: "HTTP"
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/load-balancer-attributes: "idle_timeout.timeout_seconds=300"
+    alb.ingress.kubernetes.io/subnets: "subnet-0bced9e6f0f5d767a,subnet-0c9b55ffcce908122,subnet-0bbd4057dd2a3fc9a"
+  tls: false
+
+persistence:
+  enabled: true
+  storageClass: "ghost-efs-sc"
+  size: 8Gi
+
+mysql:
+  enabled: true
+  auth:
+    rootPassword: "RootPass@123"
+    database: "ghost"
+    username: "ghost"
+    password: "GhostPass@123"
+  primary:
+    persistence:
+      enabled: true
+      storageClass: "gp2-csi"
+      size: 8Gi

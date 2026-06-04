@@ -18,3 +18,7 @@ server:
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
       alb.ingress.kubernetes.io/load-balancer-attributes: "idle_timeout.timeout_seconds=300"
       alb.ingress.kubernetes.io/subnets: "subnet-0bced9e6f0f5d767a,subnet-0c9b55ffcce908122,subnet-0bbd4057dd2a3fc9a"
+redis:
+  master:
+    persistence:
+      storageClass: "gp2-csi"
