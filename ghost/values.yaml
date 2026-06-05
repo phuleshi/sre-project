@@ -24,7 +24,7 @@ ghost:
 
   persistence:
     enabled: true
-    storageClass: "ghost-efs-sc"
+    storageClass: "ghost"
     accessMode: ReadWriteMany
     size: 8Gi
 
