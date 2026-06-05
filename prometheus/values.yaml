@@ -1,3 +1,5 @@
+# Prometheus Community kube-prometheus-stack
+
 prometheus:
   service:
     type: LoadBalancer
@@ -13,10 +15,6 @@ prometheus:
       limits:
         cpu: 500m
         memory: 512Mi
-    # Tăng timeout để Prometheus có thời gian khởi động
-    additionalArgs:
-      - name: query.timeout
-        value: 2m
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -32,10 +30,34 @@ prometheus:
         static_configs:
           - targets:
               - ghost-mysql-metrics.app.svc.cluster.local:9104
-
-  # Tăng probe timeout
   livenessProbe:
-    initialDelaySeconds: 60      # chờ 60s trước khi check
+    initialDelaySeconds: 60
     periodSeconds: 30
     timeoutSeconds: 10
-    failureThreshold: 10         # cho phép fail 10 lần
+    failureThreshold: 10
+  readinessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 10
+    failureThreshold: 10
+
+alertmanager:
+  enabled: false
+
+grafana:
+  enabled: false
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
