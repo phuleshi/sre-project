@@ -1,0 +1,51 @@
+# Prometheus Community kube-prometheus-stack
+
+prometheus:
+  prometheusSpec:
+    retention: 10d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp2-csi
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 8Gi
+    additionalScrapeConfigs:    
+      - job_name: ghost-mysql-metrics
+        scrape_interval: 30s
+        static_configs:
+          - targets:
+              - ghost-mysql-metrics.app.svc.cluster.local:9104
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp2-csi
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 8Gi
+
+grafana:
+  enabled: true
+  adminPassword: "admin123"
+  persistence:
+    enabled: true
+    storageClassName: gp2-csi
+    size: 8Gi
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-type: external
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true

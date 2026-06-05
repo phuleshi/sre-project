@@ -6,4 +6,9 @@ provisioner: efs.csi.aws.com
 parameters:
   provisioningMode: efs-ap
   fileSystemId: fs-0fce0d41ec11e396e
-  directoryPerms: "700"
+  directoryPerms: "755"
+  uid: "1000"        # ✅ match với user node trong Ghost container
+  gid: "1000"        # ✅ match với group node trong Ghost container
+  basePath: "/ghost"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
