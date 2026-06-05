@@ -1,6 +1,11 @@
 # Prometheus Community kube-prometheus-stack
 
 prometheus:
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-type: external
   prometheusSpec:
     retention: 10d
     storageSpec:
@@ -12,7 +17,7 @@ prometheus:
           resources:
             requests:
               storage: 8Gi
-    additionalScrapeConfigs:    
+    additionalScrapeConfigs:
       - job_name: ghost-mysql-metrics
         scrape_interval: 30s
         static_configs:
@@ -20,6 +25,11 @@ prometheus:
               - ghost-mysql-metrics.app.svc.cluster.local:9104
 
 alertmanager:
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-type: external
   alertmanagerSpec:
     storage:
       volumeClaimTemplate:
