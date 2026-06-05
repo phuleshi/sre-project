@@ -10,6 +10,7 @@ spec:
       chart: kube-prometheus-stack
       targetRevision: 86.1.0
       helm:
+        skipCrds: true          # ← skip CRDs, đã handle riêng
         valueFiles:
           - $values/prometheus/values.yaml
     - repoURL: https://github.com/phuleshi/sre-project.git
@@ -25,15 +26,9 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-      - RespectIgnoreDifferences=true
   ignoreDifferences:
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: prometheusrules.monitoring.coreos.com
+    - group: monitoring.coreos.com
+      kind: Prometheus
       jsonPointers:
-        - /status
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      jsonPointers:
-        - /status
-        - /spec/conversion/webhook/clientConfig/caBundle
+        - /spec/livenessProbe
+        - /spec/readinessProbe
