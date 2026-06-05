@@ -1,0 +1,13 @@
+Ghost has been deployed!
+
+1. Get the Ghost URL:
+   kubectl get svc {{ .Release.Name }}-ghost -n {{ .Release.Namespace }}
+
+2. Wait for EXTERNAL-IP to be assigned (1-2 minutes)
+
+3. Update ghost.url in values.yaml with the ELB DNS:
+   ghost:
+     url: "http://<EXTERNAL-IP>"
+
+4. Access Ghost admin:
+   http://<EXTERNAL-IP>/ghost

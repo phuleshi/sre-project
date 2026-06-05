@@ -1,0 +1,14 @@
+{{- if .Values.ghost.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-ghost-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - {{ .Values.ghost.persistence.accessMode }}
+  storageClassName: {{ .Values.ghost.persistence.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.ghost.persistence.size }}
+{{- end }}

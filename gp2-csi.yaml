@@ -1,8 +1,8 @@
-apiVersion: storage.k8s.io/v1
 kind: StorageClass
+apiVersion: storage.k8s.io/v1
 metadata:
   name: gp2-csi
-provisioner: ebs.csi.aws.com
+provisioner: ebs.csi.eks.amazonaws.com
 allowVolumeExpansion: true
 parameters:
   type: gp2

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-ghost
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-ghost
+spec:
+  replicas: {{ .Values.ghost.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-ghost
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-ghost
+    spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z {{ .Release.Name }}-mysql 3306; do
+                echo "Waiting for MySQL..."
+                sleep 3
+              done
+              echo "MySQL is ready"
+      containers:
+        - name: ghost
+          image: "{{ .Values.ghost.image.repository }}:{{ .Values.ghost.image.tag }}"
+          imagePullPolicy: {{ .Values.ghost.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 2368
+          env:
+            - name: database__client
+              value: "mysql"
+            - name: database__connection__host
+              value: "{{ .Release.Name }}-mysql"
+            - name: database__connection__port
+              value: "3306"
+            - name: database__connection__database
+              value: {{ .Values.mysql.auth.database | quote }}
+            - name: database__connection__user
+              value: {{ .Values.mysql.auth.username | quote }}
+            - name: database__connection__password
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-mysql-secret
+                  key: mysql-password
+            - name: url
+              value: {{ .Values.ghost.url | quote }}
+            - name: mail__transport
+              value: "Direct"
+            - name: NODE_ENV
+              value: "production"
+          resources:
+            {{- toYaml .Values.ghost.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /ghost/api/admin/site/
+              port: 2368
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /ghost/api/admin/site/
+              port: 2368
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          volumeMounts:
+            - name: ghost-data
+              mountPath: /var/lib/ghost/content
+      volumes:
+        - name: ghost-data
+          {{- if .Values.ghost.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-ghost-pvc
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
