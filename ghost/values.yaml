@@ -6,7 +6,7 @@ ghost:
     pullPolicy: IfNotPresent
 
   # Blog settings
-  url: ""  # e.g. http://your-elb-dns.amazonaws.com
+  url: "k8s-app-ghostgho-b51cc9977d-974120bade00318e.elb.ap-northeast-1.amazonaws.com"  # e.g. http://your-elb-dns.amazonaws.com
   blogTitle: "User's Blog"
 
   # Admin account
