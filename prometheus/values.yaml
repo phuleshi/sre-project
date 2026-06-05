@@ -1,5 +1,3 @@
-# Prometheus Community kube-prometheus-stack
-
 prometheus:
   service:
     type: LoadBalancer
@@ -7,7 +5,7 @@ prometheus:
       service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
       service.beta.kubernetes.io/aws-load-balancer-type: external
   prometheusSpec:
-    retention: 10d
+    retention: 7d
     resources:
       requests:
         cpu: 100m
@@ -15,6 +13,10 @@ prometheus:
       limits:
         cpu: 500m
         memory: 512Mi
+    # Tăng timeout để Prometheus có thời gian khởi động
+    additionalArgs:
+      - name: query.timeout
+        value: 2m
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -31,23 +33,9 @@ prometheus:
           - targets:
               - ghost-mysql-metrics.app.svc.cluster.local:9104
 
-alertmanager:
-  enabled: false        # tắt để tiết kiệm RAM
-
-grafana:
-  enabled: false        # tắt để tiết kiệm RAM
-
-nodeExporter:
-  enabled: true
-
-kubeStateMetrics:
-  enabled: true
-
-prometheusOperator:
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
+  # Tăng probe timeout
+  livenessProbe:
+    initialDelaySeconds: 60      # chờ 60s trước khi check
+    periodSeconds: 30
+    timeoutSeconds: 10
+    failureThreshold: 10         # cho phép fail 10 lần
