@@ -1,6 +1,0 @@
-apiVersion: v2
-name: ghost
-description: Ghost blog platform with MySQL
-type: application
-version: 0.1.0
-appVersion: "5.87.2"
