@@ -25,34 +25,10 @@ prometheus:
               - ghost-mysql-metrics.app.svc.cluster.local:9104
 
 alertmanager:
-  service:
-    type: LoadBalancer
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-      service.beta.kubernetes.io/aws-load-balancer-type: external
-  alertmanagerSpec:
-    storage:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: gp2-csi
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 8Gi
+  enabled: false
 
 grafana:
-  enabled: true
-  adminPassword: "admin123"
-  persistence:
-    enabled: true
-    storageClassName: gp2-csi
-    size: 8Gi
-  service:
-    type: LoadBalancer
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-      service.beta.kubernetes.io/aws-load-balancer-type: external
+  enabled: false
 
 nodeExporter:
   enabled: true
