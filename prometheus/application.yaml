@@ -1,45 +1,28 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-prometheus-stack
+  name: prometheus
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
-  labels:
-    release: kube-prometheus-stack
 spec:
-  destination:
-    name: in-cluster
-    namespace: argocd
   project: default
   source:
-    repoURL: 'https://prometheus-community.github.io/helm-charts'
-    targetRevision: 45.6.0
-    helm:
-      skipCrds: true
-      values: |-
-        prometheus:
-          prometheusSpec:
-            serviceMonitorSelector:
-              matchLabels:
-                prometheus: argo-cd-grafana
-            additionalScrapeConfigs: |
-              - job_name: 'argocd'
-                scrape_interval: 30s
-                scrape_timeout: 10s
-                static_configs:
-                  - targets: ['argocd-application-controller-metrics.argocd.svc.cluster.local:8082', 'argocd-redis-metrics.argocd.svc.cluster.local:9121']
-              - job_name: 'alertManager'
-                scrape_interval: 30s
-                scrape_timeout: 10s
-                static_configs:
-                  - targets: ['alertmanager-operated.argocd.svc.cluster.local:9093']
-        alertmanager:
-          enabled: true
-        nodeExporter:
-          enabled: false
+    repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
+    targetRevision: "65.1.1"
+    helm:
+      valueFiles:
+        - $values/prometheus/values.yaml   # trỏ đúng path trong repo
+
+    repoURL: https://github.com/phuleshi/sre-project  # ← SỬA
+    targetRevision: main                                      # ← SỬA nếu dùng branch khác
+    ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
